@@ -131,7 +131,7 @@ const FORMA = {pix:'Pix', credito:'Crédito', debito:'Débito'};
 
 // colunas de cada painel: [título, status mostrados, botões]
 const COLS = MODO === 'garcom' ? [
-  ['Aguardando pagamento', ['aguardando_pagamento'], p => [['ok', p.forma === 'pix' ? 'Pix recebido' : 'Pago na maquininha', 'pago'], ['red', 'Cancelar', 'cancelado']]],
+  ['Aguardando pagamento', ['aguardando_pagamento'], p => p.forma === 'pix' && DEMO ? [['red', 'Cancelar', 'cancelado']] : [['ok', p.forma === 'pix' ? 'Pix recebido' : 'Pago na maquininha', 'pago'], ['red', 'Cancelar', 'cancelado']]],
   ['Prontos para levar', ['pronto'], p => [['gold', 'Entregue na mesa', 'entregue']]],
 ] : [
   ['Novos (já pagos)', ['pago'], p => [['gold', 'Começar', 'preparando']]],
@@ -157,7 +157,7 @@ function confere(p) {
 const minutos = t => Math.max(0, Math.floor((Date.now() - t) / 60000));
 function card(p, botoes) {
   const c = confere(p), desde = p['em_' + p.status] || p.criado, m = minutos(desde);
-  const valor = MODO === 'garcom' ? '<div class="cobrar"><span>Cobrar · <span class="badge">' + (FORMA[p.forma] || p.forma) + '</span></span><b>' + brl(c.ok ? p.total : c.certo) + '</b></div>' + (p.forma === 'pix' && p.status === 'aguardando_pagamento' ? '<div class="dica">Confira no app do banco se o Pix de ' + brl(c.ok ? p.total : c.certo) + ' caiu antes de confirmar.</div>' : '') + (c.ok ? '' : '<div class="alerta">' + (c.desconhecido ? 'Tem item que não está no cardápio. Confira com o cliente.' : 'O valor do pedido não bate com o cardápio. Cobre ' + brl(c.certo) + '.') + '</div>') : '';
+  const valor = MODO === 'garcom' ? '<div class="cobrar"><span>Cobrar · <span class="badge">' + (FORMA[p.forma] || p.forma) + '</span></span><b>' + brl(c.ok ? p.total : c.certo) + '</b></div>' + (p.forma === 'pix' && p.status === 'aguardando_pagamento' ? '<div class="dica">' + (DEMO ? 'Pix: a confirmação é automática. Não precisa ir até a mesa.' : 'Confira no app do banco se o Pix de ' + brl(c.ok ? p.total : c.certo) + ' caiu antes de confirmar.') + '</div>' : '') + (c.ok ? '' : '<div class="alerta">' + (c.desconhecido ? 'Tem item que não está no cardápio. Confira com o cliente.' : 'O valor do pedido não bate com o cardápio. Cobre ' + brl(c.certo) + '.') + '</div>') : '';
   return '<article class="ped' + (novos.has(p.id) ? ' novo' : '') + '"><div class="top"><span class="mesa">Mesa ' + esc(p.mesa) + '</span><span class="cod">#' + esc(p.codigo || '') + (p.nome ? ' · ' + esc(p.nome) : '') + '</span><span class="tempo' + (m >= 15 ? ' atraso' : '') + '">' + (m ? 'há ' + m + ' min' : 'agora') + '</span></div>' +
     '<ul class="itens">' + (p.itens || []).map(i => '<li><b>' + i.qn + 'x</b><span>' + esc(i.nm) + '</span></li>').join('') + '</ul>' +
     (p.obs ? '<div class="obs">Obs.: ' + esc(p.obs) + '</div>' : '') + valor +

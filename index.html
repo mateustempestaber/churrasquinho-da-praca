@@ -371,13 +371,14 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
       <h3 id="stTit">Aguardando pagamento</h3>
       <ol class="steps" id="steps"><li>Pagamento</li><li>Na brasa</li><li>Pronto</li><li>Entregue</li></ol>
       <p class="msg" id="stTx" style="color:#dccbb6;font-size:15px"></p>
+      <p class="msg" id="pixSimTx" hidden style="color:var(--gold2);font-weight:600"></p>
       <div class="pixbox" id="pixBox" hidden>
         <div class="pixqr" id="pixQr"></div>
         <div class="pixtx">
           <b>Pix de <span id="pixVal"></span></b>
           <span>Abra o app do seu banco, escolha Pix e leia o QR code. Ou copie o código:</span>
           <textarea id="pixCod" readonly rows="3" aria-label="Pix copia e cola"></textarea>
-          <div class="row"><button class="btn gold" type="button" id="pixCopiar">Copiar código Pix</button><button class="btn ghost" type="button" id="pixSimula" hidden>Simular Pix pago</button></div>
+          <div class="row"><button class="btn gold" type="button" id="pixCopiar">Copiar código Pix</button></div>
         </div>
       </div>
       <ul class="lines" id="stLines"></ul>
@@ -667,7 +668,7 @@ const boxP = document.getElementById('boxPedido'), boxS = document.getElementByI
 const ETAPA = {aguardando_pagamento:0, pago:1, preparando:1, pronto:2, entregue:3};
 const TEXTO = {
   aguardando_pagamento:['Aguardando pagamento', 'O garçom já foi avisado e vai até a sua mesa com a maquininha. Assim que você pagar, o pedido vai para a churrasqueira.'],
-  aguardando_pix:['Pague com Pix', 'Assim que o pagamento for confirmado, o pedido vai para a churrasqueira.'],
+  aguardando_pix:['Pague com Pix', 'O pagamento é confirmado sozinho. Assim que cair, o pedido vai direto para a churrasqueira.'],
   pago:['Pagamento confirmado', 'Seu pedido já foi para a churrasqueira.'],
   preparando:['Na brasa!', 'O churrasqueiro está preparando o seu pedido.'],
   pronto:['Pronto!', 'O garçom já vai levar até a sua mesa.'],
@@ -682,10 +683,11 @@ function acompanhar(id) {
     document.getElementById('stTag').textContent = 'Mesa ' + p.mesa + ' · Pedido #' + p.codigo;
     const pixAberto = p.forma === 'pix' && p.status === 'aguardando_pagamento';
     const [tt, tx] = pixAberto ? TEXTO.aguardando_pix : TEXTO[p.status] || TEXTO.aguardando_pagamento;
-    const pb = document.getElementById('pixBox'); pb.hidden = !pixAberto;
+    const pb = document.getElementById('pixBox'); pb.hidden = !pixAberto; if (!pixAberto && simPix === p.id) setTimeout(() => { document.getElementById('pixSimTx').hidden = true; }, 2500);
     if (pixAberto && pb.dataset.id !== p.id) {
       pb.dataset.id = p.id;
       const cod = pixCodigo(p.total, 'MESA' + p.mesa + p.codigo);
+      simulaPix(p.id);
       document.getElementById('pixCod').value = cod; document.getElementById('pixVal').textContent = brl(p.total);
       try { const q = qrcode(0, 'M'); q.addData(cod); q.make(); document.getElementById('pixQr').innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); }
       catch (err) { document.getElementById('pixQr').hidden = true; }
@@ -698,8 +700,14 @@ function acompanhar(id) {
     document.getElementById('stTot').textContent = brl(p.total || 0);
   });
 }
-const pixSim = document.getElementById('pixSimula');
-if (DEMO) { pixSim.hidden = false; pixSim.addEventListener('click', () => { const id = document.getElementById('pixBox').dataset.id; if (id) DB.mudar(id, 'pago', {pix_auto:true}); }); }
+/* demonstração: simula o cliente pagando o Pix no app do banco e a confirmação automática */
+let simPix = null;
+function simulaPix(id) {
+  if (!DEMO || simPix === id) return; simPix = id;
+  const aviso = document.getElementById('pixSimTx'); let n = 6;
+  const tick = () => { if (simPix !== id) return; aviso.hidden = false; aviso.textContent = n > 0 ? 'Demonstração: o cliente está pagando no app do banco… ' + n + 's' : 'Pix recebido! Confirmado automaticamente.'; if (n-- > 0) setTimeout(tick, 1000); else DB.mudar(id, 'pago', {pix_auto:true}); };
+  tick();
+}
 document.getElementById('pixCopiar').addEventListener('click', async e => {
   const t = document.getElementById('pixCod');
   try { await navigator.clipboard.writeText(t.value); } catch (err) { t.select(); document.execCommand('copy'); }
