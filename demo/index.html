@@ -108,6 +108,7 @@ body.intro{overflow:hidden}
 .pixtx b{font:600 20px var(--serif);color:var(--gold);text-transform:uppercase}
 .pixtx textarea{width:100%;resize:none;border-radius:10px;border:1px solid var(--line);background:#120d0a;color:var(--muted);font:12px/1.35 ui-monospace,monospace;padding:8px;word-break:break-all}
 @media(max-width:600px){.pixbox{flex-direction:column;align-items:center}}
+.pedido-wrap{max-width:620px}
 .mesa-tag{display:inline-block;padding:4px 12px;border-radius:99px;background:var(--fire);color:#fff;font:600 13px var(--sans);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
 .pags{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .pags legend{font-size:14px;color:var(--muted);margin-bottom:8px;padding:0}
@@ -330,17 +331,7 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
 </section>
 
 <section class="band" id="pedido">
-  <div class="wrap split">
-    <div>
-      <h2>Faça seu <em>pedido</em></h2>
-      <p class="lead" style="margin-top:14px">Escolha no cardápio, confira o total e pague. O pedido vai para a churrasqueira assim que o pagamento é confirmado.</p>
-      <ol class="how">
-        <li><div><strong>Leia o QR code da sua mesa</strong><span>O número da mesa já vem certinho no pedido.</span></div></li>
-        <li><div><strong>Escolha no cardápio</strong><span>Toque no espeto ou na bebida e escolha a quantidade. O site soma tudo.</span></div></li>
-        <li><div><strong>Pague</strong><span>Pix aqui pelo site, ou cartão: o garçom é avisado na hora e leva a maquininha até a mesa.</span></div></li>
-        <li><div><strong>Acompanhe aqui</strong><span>Você vê quando vai para a brasa e quando fica pronto. O garçom leva até a mesa.</span></div></li>
-      </ol>
-    </div>
+  <div class="wrap pedido-wrap">
     <div id="carrinho">
     <div class="box" id="boxPedido">
       <div class="mesa-tag" id="mesaTag" hidden></div>
