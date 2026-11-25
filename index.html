@@ -99,9 +99,32 @@ body.intro{overflow:hidden}
 .promo.big .in{display:flex;gap:16px;align-items:flex-end;padding:20px}
 .politica{padding:14px 16px;border-radius:12px;border:1px solid rgba(255,106,26,.35);background:rgba(255,106,26,.06);font-size:14px;color:#dccbb6}
 .politica b{color:var(--ink)}
-#garcom h3{font-size:44px}
-#garcom .lines li{font-size:19px}
-#garcom .lines b{color:var(--gold);font:700 22px var(--serif);min-width:44px}
+.demobar{position:fixed;left:0;right:0;top:0;z-index:70;padding:6px 12px;background:#3a2a0a;color:var(--gold2);font-size:13px;text-align:center}
+.demobar a{color:#fff}
+.pixbox{display:flex;gap:16px;align-items:flex-start;padding:14px;border-radius:14px;border:1px solid rgba(244,183,50,.4);background:#1f160e;margin:10px 0}
+.pixqr{flex:none;width:170px;height:170px;border-radius:10px;background:#fff;padding:8px}
+.pixqr svg{width:100%;height:100%;display:block}
+.pixtx{display:grid;gap:8px;font-size:14px;color:#dccbb6}
+.pixtx b{font:600 20px var(--serif);color:var(--gold);text-transform:uppercase}
+.pixtx textarea{width:100%;resize:none;border-radius:10px;border:1px solid var(--line);background:#120d0a;color:var(--muted);font:12px/1.35 ui-monospace,monospace;padding:8px;word-break:break-all}
+@media(max-width:600px){.pixbox{flex-direction:column;align-items:center}}
+.mesa-tag{display:inline-block;padding:4px 12px;border-radius:99px;background:var(--fire);color:#fff;font:600 13px var(--sans);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.pags{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pags legend{font-size:14px;color:var(--muted);margin-bottom:8px;padding:0}
+.pag{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);cursor:pointer;color:var(--ink)}
+.pag input{height:18px;width:18px;flex:none;margin:2px 0 0;accent-color:var(--gold)}
+.pag b{display:block;font-size:15px}
+.pag small{display:block;color:var(--muted);font-size:12px;line-height:1.3}
+.pag:has(input:checked){border-color:var(--gold);background:#24180d}
+.pag.off{opacity:.55;cursor:not-allowed}
+.steps{list-style:none;padding:0;margin:14px 0 6px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;counter-reset:st}
+.steps li{position:relative;padding-top:34px;text-align:center;font-size:12px;color:var(--muted)}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--card);font:600 13px var(--sans);color:var(--muted)}
+.steps li.ok{color:var(--ink)}
+.steps li.ok::before{content:"✓";background:var(--gold);border-color:var(--gold);color:var(--on)}
+.steps li.now{color:var(--gold2);font-weight:600}
+.steps li.now::before{border-color:var(--fire);color:var(--fire);box-shadow:0 0 0 4px rgba(255,106,26,.18)}
+@media(max-width:600px){.pags{grid-template-columns:1fr}}
 .chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink);cursor:pointer}
 .chk input{height:20px;width:20px;flex:none;margin-top:1px;accent-color:var(--gold)}
 
@@ -310,38 +333,60 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
   <div class="wrap split">
     <div>
       <h2>Faça seu <em>pedido</em></h2>
-      <p class="lead" style="margin-top:14px">Leu o QR code da mesa? Monte o pedido aqui, veja o total e mande para a gente. Na hora de pagar, o garçom leva a maquininha até você.</p>
+      <p class="lead" style="margin-top:14px">Escolha no cardápio, confira o total e pague. O pedido vai para a churrasqueira assim que o pagamento é confirmado.</p>
       <ol class="how">
-        <li><div><strong>Escolha no cardápio</strong><span>Toque no espeto ou na bebida e escolha a quantidade.</span></div></li>
-        <li><div><strong>Confira o total</strong><span>O site soma tudo para você. Ex.: 4 espetos de carne = R$ 48,00.</span></div></li>
-        <li><div><strong>Envie o pedido</strong><span>Coloque o número da mesa e mande. Se preferir, mostre a tela para o garçom.</span></div></li>
-        <li><div><strong>Pague na mesa</strong><span>O garçom leva a maquininha. Cartão de crédito, débito ou Pix.</span></div></li>
+        <li><div><strong>Leia o QR code da sua mesa</strong><span>O número da mesa já vem certinho no pedido.</span></div></li>
+        <li><div><strong>Escolha no cardápio</strong><span>Toque no espeto ou na bebida e escolha a quantidade. O site soma tudo.</span></div></li>
+        <li><div><strong>Pague</strong><span>Pix aqui pelo site, ou cartão: o garçom leva a maquininha até a mesa.</span></div></li>
+        <li><div><strong>Acompanhe aqui</strong><span>Você vê quando vai para a brasa e quando fica pronto. O garçom leva até a mesa.</span></div></li>
       </ol>
-      <div class="politica" style="margin-top:14px"><b>Reservas.</b> Vai reservar para mais tarde? A gente segura a reserva por até <b><span class="tol">20</span> minutos</b> depois do horário marcado. Depois disso, ela é cancelada. Sem taxa.</div>
     </div>
-    <div class="box">
+    <div>
+    <div class="box" id="boxPedido">
+      <div class="mesa-tag" id="mesaTag" hidden></div>
       <h3>Seu pedido</h3>
+      <div class="politica" id="semMesa" hidden><b>Leia o QR code da sua mesa</b> para fazer o pedido. Sem ele, dá para ver o cardápio, mas não para pedir.</div>
       <ul class="lines" id="lines"></ul>
       <div class="total"><span>Total</span><b id="tot">R$ 0,00</b></div>
       <form class="ped" id="ped" novalidate>
         <div class="f2">
-          <label>Como vai ser<select id="pTipo"><option value="mesa">Estou na mesa</option><option value="reserva">Reservar para mais tarde</option><option value="retirar">Vou retirar</option></select></label>
-          <label id="lMesa">Número da mesa<input id="pMesa" inputmode="numeric" placeholder="Ex.: 5"></label>
-          <label id="lHora" hidden>Horário<input id="pHora" type="time" step="900"></label>
+          <label>Seu nome (opcional)<input id="pNome" autocomplete="given-name" maxlength="40"></label>
+          <label>Observação (opcional)<input id="pObs" placeholder="Ex.: bem passado" maxlength="120"></label>
         </div>
-        <div class="f2">
-          <label>Seu nome<input id="pNome" autocomplete="name"></label>
-          <label>Pagamento<select id="pPag"><option>Cartão de crédito</option><option>Cartão de débito</option><option>Pix</option></select></label>
-        </div>
-        <label>Observação (opcional)<input id="pObs" placeholder="Ex.: espeto bem passado"></label>
-        <div class="politica" id="politica"></div>
+        <fieldset class="pags">
+          <legend>Como você vai pagar?</legend>
+          <label class="pag"><input type="radio" name="pag" value="pix"><span><b>Pix</b><small>Pague aqui pelo app do banco</small></span></label>
+          <label class="pag"><input type="radio" name="pag" value="credito" checked><span><b>Crédito</b><small>O garçom leva a maquininha</small></span></label>
+          <label class="pag"><input type="radio" name="pag" value="debito"><span><b>Débito</b><small>O garçom leva a maquininha</small></span></label>
+        </fieldset>
         <p class="msg" id="pMsg" role="status"></p>
         <div class="row">
-          <a class="btn gold" id="pEnviar" target="_blank" rel="noopener" aria-disabled="true">Enviar pelo WhatsApp</a>
-          <button class="btn ghost" type="button" id="pMostrar">Mostrar ao garçom</button>
+          <a class="btn gold" id="pEnviar" target="_blank" rel="noopener" aria-disabled="true" style="flex:1">Fazer pedido e chamar o garçom</a>
           <button class="btn ghost" type="button" id="pLimpar">Limpar</button>
         </div>
       </form>
+    </div>
+    <div class="box" id="boxStatus" hidden aria-live="polite">
+      <div class="mesa-tag" id="stTag"></div>
+      <h3 id="stTit">Aguardando pagamento</h3>
+      <ol class="steps" id="steps"><li>Pagamento</li><li>Na brasa</li><li>Pronto</li><li>Entregue</li></ol>
+      <p class="msg" id="stTx" style="color:#dccbb6;font-size:15px"></p>
+      <div class="pixbox" id="pixBox" hidden>
+        <div class="pixqr" id="pixQr"></div>
+        <div class="pixtx">
+          <b>Pix de <span id="pixVal"></span></b>
+          <span>Abra o app do seu banco, escolha Pix e leia o QR code. Ou copie o código:</span>
+          <textarea id="pixCod" readonly rows="3" aria-label="Pix copia e cola"></textarea>
+          <div class="row"><button class="btn gold" type="button" id="pixCopiar">Copiar código Pix</button><a class="btn ghost" id="pixPaguei" target="_blank" rel="noopener">Já paguei</a></div>
+        </div>
+      </div>
+      <ul class="lines" id="stLines"></ul>
+      <div class="total"><span id="stForma"></span><b id="stTot"></b></div>
+      <div class="row">
+        <a class="btn ghost" id="stZap" target="_blank" rel="noopener">Chamar o garçom de novo</a>
+        <button class="btn gold" type="button" id="stNovo">Fazer outro pedido</button>
+      </div>
+    </div>
     </div>
   </div>
 </section>
@@ -362,17 +407,6 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
   <a class="btn gold" href="#pedido">Ver pedido</a>
 </div>
 
-<div class="modal" id="garcom" role="dialog" aria-modal="true" aria-labelledby="gTit">
-  <div class="sheet" style="width:min(520px,100%)">
-    <div class="g" id="gSub"></div>
-    <h3 id="gTit">Pedido</h3>
-    <ul class="lines" id="gLines"></ul>
-    <div class="total"><span id="gPag"></span><b id="gTot"></b></div>
-    <p id="gObs" style="color:var(--muted);font-size:14px"></p>
-    <div class="row"><button class="btn ghost" id="gClose" style="flex:1">Voltar</button></div>
-  </div>
-</div>
-
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mNm">
   <div class="sheet">
     <div class="photo" id="mFoto" hidden><img id="mImg" alt=""></div>
@@ -391,13 +425,63 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 {
-/* WhatsApp da casa: coloque o número com DDI e DDD, só números. Ex.: '5516999999999' */
-const WA = '';
+/* WhatsApp do garçom: recebe "Mesa 3 - débito - aguardando". Só números, com 55 e DDD */
+const WA_GARCOM = '5516997516854';
+const MAX_MESA = 200;
+/* ---------- Pix (copia e cola + QR) ---------- */
+const PIX = {chave:'+5516997516854', nome:'CHURRASQUINHO DA PRACA', cidade:'ARARAQUARA'};
+function pixCodigo(valor, txid) {
+  const f = (id, v) => id + String(v.length).padStart(2, '0') + v;
+  const limpa = (s, n) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9 ]/g, '').toUpperCase().slice(0, n);
+  let p = f('00', '01') + f('26', f('00', 'br.gov.bcb.pix') + f('01', PIX.chave)) + f('52', '0000') + f('53', '986') + f('54', valor.toFixed(2)) + f('58', 'BR') + f('59', limpa(PIX.nome, 25)) + f('60', limpa(PIX.cidade, 15)) + f('62', f('05', limpa(txid, 25).replace(/ /g, '') || '***')) + '6304';
+  let crc = 0xFFFF;
+  for (let i = 0; i < p.length; i++) { crc ^= p.charCodeAt(i) << 8; for (let j = 0; j < 8; j++) crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1; crc &= 0xFFFF; }
+  return p + crc.toString(16).toUpperCase().padStart(4, '0');
+}
 
-/* Reserva: depois de quantos minutos de atraso ela é cancelada (sem taxa) */
-const TOLERANCIA = 20;
+/* ---------- banco de pedidos ----------
+   Com FIREBASE preenchido, usa o Firestore (tempo real entre celulares).
+   Sem ele, roda em modo demonstração: os pedidos ficam só neste navegador
+   (abra o site, o painel do garçom e o da cozinha em abas do mesmo navegador). */
+const FIREBASE = {"apiKey": "AIzaSyDilG9T9PxMbv2Hn3PouL0NrUTtSArX3L0", "authDomain": "churrasquinho-da-praca-1bd46.firebaseapp.com", "projectId": "churrasquinho-da-praca-1bd46", "storageBucket": "churrasquinho-da-praca-1bd46.firebasestorage.app", "messagingSenderId": "542190749595", "appId": "1:542190749595:web:94f3071f8d53516167033e"};
+const DEMO = !FIREBASE;
+const STATUS = ['aguardando_pagamento', 'pago', 'preparando', 'pronto', 'entregue', 'cancelado'];
+const codigoDe = id => id.slice(-4).toUpperCase();
+const DB = (() => {
+  if (!DEMO) {
+    firebase.initializeApp(FIREBASE);
+    const fs = firebase.firestore(), col = fs.collection('pedidos'), ts = () => firebase.firestore.FieldValue.serverTimestamp();
+    const doc = d => { const x = d.data(); return {id:d.id, ...x, criado:x.criado ? x.criado.toMillis() : Date.now()}; };
+    return {
+      novoId: () => col.doc().id,
+      criar: (id, p) => col.doc(id).set({...p, status:'aguardando_pagamento', criado:ts()}),
+      ouvirUm: (id, cb) => col.doc(id).onSnapshot(d => cb(d.exists ? doc(d) : null), () => cb(null)),
+      ouvir: (lista, cb, erro) => col.where('status', 'in', lista).onSnapshot(s => cb(s.docs.map(doc)), erro),
+      mudar: (id, status, extra) => col.doc(id).update({...(extra || {}), status, ['em_' + status]:ts()}),
+      auth: firebase.auth(),
+    };
+  }
+  const K = 'cdp_pedidos', ler = () => { try { return JSON.parse(localStorage.getItem(K)) || {}; } catch (e) { return {}; } };
+  const subs = new Set(), avisa = () => subs.forEach(f => f());
+  const grava = o => { try { localStorage.setItem(K, JSON.stringify(o)); } catch (e) {} avisa(); };
+  addEventListener('storage', e => { if (e.key === K) avisa(); });
+  const ouvirF = f => { subs.add(f); f(); return () => subs.delete(f); };
+  return {
+    novoId: () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36),
+    criar: async (id, p) => { const o = ler(); o[id] = {...p, status:'aguardando_pagamento', criado:Date.now()}; grava(o); },
+    ouvirUm: (id, cb) => ouvirF(() => { const p = ler()[id]; cb(p ? {id, ...p} : null); }),
+    ouvir: (lista, cb) => ouvirF(() => cb(Object.entries(ler()).map(([id, p]) => ({id, ...p})).filter(p => lista.includes(p.status)))),
+    mudar: async (id, status, extra) => { const o = ler(); if (o[id]) { o[id] = {...o[id], ...(extra || {}), status, ['em_' + status]:Date.now()}; grava(o); } },
+    auth: null,
+  };
+})();
+
 
 /* ---------- ícones ---------- */
 const IC = {
@@ -496,7 +580,6 @@ if (fine) {
 }
 
 /* modal com quantidade */
-const garcom = document.getElementById('garcom');
 const modal = document.getElementById('modal'), mQ = document.getElementById('mQ');
 let lastFocus = null, mK = -1, mN = 1;
 function openM(k, from) {
@@ -521,7 +604,7 @@ const closeM = () => { modal.classList.remove('open'); if (lastFocus) lastFocus.
 document.getElementById('mAdd').addEventListener('click', () => { setQ(mK, mN); closeM(); });
 document.getElementById('mClose').addEventListener('click', closeM);
 modal.addEventListener('click', e => { if (e.target === modal) closeM(); });
-addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (modal.classList.contains('open')) closeM(); if (garcom.classList.contains('open')) garcom.classList.remove('open'); });
+addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (modal.classList.contains('open')) closeM(); });
 
 /* botões de promoção */
 document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => {
@@ -532,30 +615,27 @@ document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click',
 
 /* lista do pedido */
 const lines = document.getElementById('lines'), tot = document.getElementById('tot'), cb = document.getElementById('cartbar');
-const pHora = document.getElementById('pHora'), pMesa = document.getElementById('pMesa'), pPag = document.getElementById('pPag');
-const pNome = document.getElementById('pNome'), pTipo = document.getElementById('pTipo'), pObs = document.getElementById('pObs'), pEnv = document.getElementById('pEnviar'), pMsg = document.getElementById('pMsg');
-document.querySelectorAll('.tol').forEach(e => e.textContent = TOLERANCIA);
-// QR code da mesa: o link pode trazer ?mesa=5 e o número já vem preenchido
-const mesaURL = new URLSearchParams(location.search).get('mesa');
-if (mesaURL) pMesa.value = mesaURL.replace(/\D/g, '').slice(0, 4);
+const pNome = document.getElementById('pNome'), pObs = document.getElementById('pObs'), pEnv = document.getElementById('pEnviar'), pMsg = document.getElementById('pMsg');
+// mesa vem do QR code (?mesa=3) e não dá para trocar
+const mesaQ = parseInt(new URLSearchParams(location.search).get('mesa'), 10);
+const MESA = mesaQ >= 1 && mesaQ <= MAX_MESA ? mesaQ : 0;
+if (MESA) {
+  const tg = document.getElementById('mesaTag'); tg.hidden = false; tg.textContent = 'Mesa ' + MESA;
+  document.querySelector('.hero .tag').innerHTML = '<i></i>Você está na mesa ' + MESA;
+} else document.getElementById('semMesa').hidden = false;
+const formaTx = {pix:'Pix', credito:'Crédito', debito:'Débito'};
+const forma = () => (document.querySelector('input[name=pag]:checked') || {}).value || 'credito';
 const totalPedido = () => { let t = 0; cart.forEach((qn, k) => t += ALL[k].v * qn); return t; };
-const itensPedido = () => [...cart].map(([k, qn]) => { const it = ALL[k]; return {qn, nm:it.nm + (it.cat === 'bebidas' || it.cat === 'cervejas' ? ' (' + it.g + ')' : ''), sub:it.v * qn}; });
-function tipoUI() {
-  const t = pTipo.value;
-  document.getElementById('lMesa').hidden = t !== 'mesa';
-  document.getElementById('lHora').hidden = t === 'mesa';
-  const pol = document.getElementById('politica');
-  pol.hidden = t !== 'reserva';
-  pol.innerHTML = '<b>Atenção:</b> se você não chegar até ' + TOLERANCIA + ' minutos depois do horário' + (pHora.value ? ' (até ' + somaMin(pHora.value, TOLERANCIA) + ')' : '') + ', a reserva é cancelada. Não tem taxa.';
-}
-const somaMin = (hm, m) => { const [h, mi] = hm.split(':').map(Number), t = (h * 60 + mi + m) % 1440; return String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'); };
-const faltando = () => !cart.size ? 'Escolha pelo menos um item no cardápio.' : pTipo.value === 'mesa' && !pMesa.value.trim() ? 'Coloque o número da mesa.' : pTipo.value !== 'mesa' && !pHora.value ? 'Escolha o horário.' : !pNome.value.trim() ? 'Coloque seu nome.' : '';
+const nomeItem = it => it.nm + (it.cat === 'bebidas' || it.cat === 'cervejas' ? ' (' + it.g + ')' : '');
+let rascunhoId = DB.novoId();
+const zapGarcom = (codigo, f, total) => 'https://wa.me/' + WA_GARCOM + '?text=' + encodeURIComponent('Mesa ' + MESA + ' - ' + formaTx[f].toLowerCase() + ' - aguardando\nPedido #' + codigo + ' - ' + brl(total));
+const faltando = () => !MESA ? 'Leia o QR code da sua mesa para fazer o pedido.' : !cart.size ? 'Escolha pelo menos um item no cardápio.' : '';
 function paint() {
   let total = 0, n = 0;
   const rows = [...cart].map(([k, qn]) => { const it = ALL[k]; total += it.v * qn; n += qn; return '<li><span class="n">' + esc(it.nm) + '<small>' + esc(it.g) + ' · ' + brl(it.v) + '</small></span><span class="step"><button type="button" data-d="-1" data-k="' + k + '" aria-label="Diminuir ' + esc(it.nm) + '">−</button><output>' + qn + '</output><button type="button" data-d="1" data-k="' + k + '" aria-label="Aumentar ' + esc(it.nm) + '">+</button></span><span class="s">' + brl(it.v * qn) + '</span></li>'; });
   lines.innerHTML = rows.length ? rows.join('') : '<li class="vazio">Seu pedido está vazio. Escolha algo no cardápio.</li>';
   tot.textContent = brl(total);
-  document.getElementById('cbTx').textContent = n + (n === 1 ? ' item' : ' itens');
+  document.getElementById('cbTx').textContent = (MESA ? 'Mesa ' + MESA + ' · ' : '') + n + (n === 1 ? ' item' : ' itens');
   document.getElementById('cbTot').textContent = brl(total);
   cb.classList.toggle('on', n > 0 && !pedidoVisivel);
   render(); upd();
@@ -563,35 +643,80 @@ function paint() {
 lines.addEventListener('click', e => { const b = e.target.closest('button[data-d]'); if (b) setQ(+b.dataset.k, (cart.get(+b.dataset.k) || 0) + +b.dataset.d); });
 document.getElementById('pLimpar').addEventListener('click', () => { cart.clear(); paint(); });
 function upd() {
-  tipoUI();
-  const ok = !faltando() && WA;
+  const ok = !faltando();
   pEnv.setAttribute('aria-disabled', String(!ok));
+  pEnv.textContent = forma() === 'pix' ? 'Fazer pedido e pagar com Pix' : 'Fazer pedido e chamar o garçom';
   if (!ok) { pEnv.removeAttribute('href'); return; }
-  const t = pTipo.value, total = totalPedido();
-  const onde = t === 'mesa' ? 'Mesa ' + pMesa.value.trim() : t === 'reserva' ? 'Reserva para as ' + pHora.value + ' (cancela se eu não chegar até as ' + somaMin(pHora.value, TOLERANCIA) + ')' : 'Retirar às ' + pHora.value;
-  const txt = 'Olá! Pedido no Churrasquinho da Praça.\n' + onde + '\nNome: ' + pNome.value.trim() + '\n\n' + itensPedido().map(i => i.qn + 'x ' + i.nm + ' - ' + brl(i.sub)).join('\n') + '\n\nTotal: ' + brl(total) + '\nPagamento: ' + pPag.value + (t === 'mesa' ? ' (maquininha na mesa)' : '') + (pObs.value.trim() ? '\nObs.: ' + pObs.value.trim() : '');
-  pEnv.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(txt);
+  if (forma() === 'pix') { pEnv.href = '#pedido'; pEnv.removeAttribute('target'); }
+  else { pEnv.href = zapGarcom(codigoDe(rascunhoId), forma(), totalPedido()); pEnv.target = '_blank'; }
 }
-[pNome, pTipo, pObs, pHora, pMesa, pPag].forEach(el => el.addEventListener('input', () => { upd(); pMsg.textContent = ''; }));
+[pNome, pObs].forEach(el => el.addEventListener('input', () => { pMsg.textContent = ''; }));
+document.querySelectorAll('input[name=pag]').forEach(el => el.addEventListener('change', () => { pMsg.textContent = ''; upd(); }));
 pEnv.addEventListener('click', e => {
-  if (pEnv.getAttribute('aria-disabled') === 'true') { e.preventDefault(); pMsg.textContent = faltando() || 'O WhatsApp da casa ainda não foi configurado. Use "Mostrar ao garçom".'; }
-  else pMsg.textContent = 'Abrindo o WhatsApp...';
+  if (pEnv.getAttribute('aria-disabled') === 'true') { e.preventDefault(); pMsg.textContent = faltando(); return; }
+  // o link do WhatsApp abre na hora (clique do usuário); o pedido é gravado em paralelo
+  const id = rascunhoId, total = totalPedido(), f = forma();
+  const pedido = {mesa:MESA, codigo:codigoDe(id), forma:f, total, nome:pNome.value.trim().slice(0, 40), obs:pObs.value.trim().slice(0, 120),
+    itens:[...cart].map(([k, qn]) => ({k:ALL[k].g + '|' + ALL[k].nm, nm:nomeItem(ALL[k]), g:ALL[k].g, qn, v:ALL[k].v}))};
+  DB.criar(id, pedido).then(() => setTimeout(() => { // espera o link do WhatsApp abrir antes de limpar a tela
+    try { localStorage.setItem('cdp_meu', id); } catch (err) {}
+    acompanhar(id); cart.clear(); pNome.value = pObs.value = ''; rascunhoId = DB.novoId(); paint();
+  }, 300)).catch(() => { pMsg.textContent = 'Não deu para enviar o pedido. Verifique a internet e tente de novo.'; });
+  pMsg.textContent = f === 'pix' ? 'Enviando o pedido...' : 'Enviando o pedido e chamando o garçom...';
+  if (f === 'pix') e.preventDefault();
 });
-/* tela grande para mostrar ao garçom */
-document.getElementById('pMostrar').addEventListener('click', () => {
-  if (!cart.size) { pMsg.textContent = 'Escolha pelo menos um item no cardápio.'; return; }
-  const t = pTipo.value;
-  document.getElementById('gSub').textContent = (pNome.value.trim() ? pNome.value.trim() + ' · ' : '') + (t === 'reserva' ? 'Reserva' : t === 'retirar' ? 'Retirada' : 'Pedido na mesa');
-  document.getElementById('gTit').textContent = t === 'mesa' ? (pMesa.value.trim() ? 'Mesa ' + pMesa.value.trim() : 'Pedido') : (pHora.value ? 'Às ' + pHora.value : 'Pedido');
-  document.getElementById('gLines').innerHTML = itensPedido().map(i => '<li><b>' + i.qn + 'x</b><span class="n">' + esc(i.nm) + '</span><span class="s">' + brl(i.sub) + '</span></li>').join('');
-  document.getElementById('gTot').textContent = brl(totalPedido());
-  document.getElementById('gPag').textContent = 'Total · ' + pPag.value;
-  document.getElementById('gObs').textContent = pObs.value.trim() ? 'Obs.: ' + pObs.value.trim() : '';
-  garcom.classList.add('open'); document.getElementById('gClose').focus();
-});
-document.getElementById('gClose').addEventListener('click', () => garcom.classList.remove('open'));
-garcom.addEventListener('click', e => { if (e.target === garcom) garcom.classList.remove('open'); });
 document.getElementById('ped').addEventListener('submit', e => e.preventDefault());
+
+/* acompanhar o pedido */
+const boxP = document.getElementById('boxPedido'), boxS = document.getElementById('boxStatus');
+const ETAPA = {aguardando_pagamento:0, pago:1, preparando:1, pronto:2, entregue:3};
+const TEXTO = {
+  aguardando_pagamento:['Aguardando pagamento', 'O garçom está indo até a sua mesa com a maquininha. Assim que você pagar, o pedido vai para a churrasqueira.'],
+  aguardando_pix:['Pague com Pix', 'Assim que o pagamento for confirmado, o pedido vai para a churrasqueira.'],
+  pago:['Pagamento confirmado', 'Seu pedido já foi para a churrasqueira.'],
+  preparando:['Na brasa!', 'O churrasqueiro está preparando o seu pedido.'],
+  pronto:['Pronto!', 'O garçom já vai levar até a sua mesa.'],
+  entregue:['Entregue', 'Bom apetite! Se quiser mais alguma coisa, é só fazer outro pedido.'],
+  cancelado:['Pedido cancelado', 'Fale com o garçom se tiver alguma dúvida.']};
+let parar = null;
+function acompanhar(id) {
+  if (parar) parar();
+  parar = DB.ouvirUm(id, p => {
+    if (!p) { boxS.hidden = true; boxP.hidden = false; return; }
+    boxP.hidden = true; boxS.hidden = false;
+    document.getElementById('stTag').textContent = 'Mesa ' + p.mesa + ' · Pedido #' + p.codigo;
+    const pixAberto = p.forma === 'pix' && p.status === 'aguardando_pagamento';
+    const [tt, tx] = pixAberto ? TEXTO.aguardando_pix : TEXTO[p.status] || TEXTO.aguardando_pagamento;
+    const pb = document.getElementById('pixBox'); pb.hidden = !pixAberto;
+    if (pixAberto && pb.dataset.id !== p.id) {
+      pb.dataset.id = p.id;
+      const cod = pixCodigo(p.total, 'MESA' + p.mesa + p.codigo);
+      document.getElementById('pixCod').value = cod; document.getElementById('pixVal').textContent = brl(p.total);
+      try { const q = qrcode(0, 'M'); q.addData(cod); q.make(); document.getElementById('pixQr').innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); }
+      catch (err) { document.getElementById('pixQr').hidden = true; }
+      document.getElementById('pixPaguei').href = 'https://wa.me/' + WA_GARCOM + '?text=' + encodeURIComponent('Mesa ' + p.mesa + ' - pix - já paguei, conferir\nPedido #' + p.codigo + ' - ' + brl(p.total));
+    }
+    document.getElementById('stTit').textContent = tt; document.getElementById('stTx').textContent = tx;
+    const e = ETAPA[p.status] ?? -1;
+    document.querySelectorAll('#steps li').forEach((li, i) => { li.className = p.status === 'cancelado' ? '' : i < e || p.status === 'entregue' ? 'ok' : i === e ? 'now' : ''; });
+    document.getElementById('stLines').innerHTML = (p.itens || []).map(i => '<li><span class="n">' + i.qn + 'x ' + esc(i.nm) + '</span><span class="s">' + brl(i.v * i.qn) + '</span></li>').join('');
+    document.getElementById('stForma').textContent = 'Total · ' + (formaTx[p.forma] || '');
+    document.getElementById('stTot').textContent = brl(p.total || 0);
+    const z = document.getElementById('stZap'); z.hidden = p.status !== 'aguardando_pagamento' || p.forma === 'pix'; z.href = 'https://wa.me/' + WA_GARCOM + '?text=' + encodeURIComponent('Mesa ' + p.mesa + ' - ' + (formaTx[p.forma] || '').toLowerCase() + ' - aguardando\nPedido #' + p.codigo + ' - ' + brl(p.total || 0));
+  });
+}
+document.getElementById('pixCopiar').addEventListener('click', async e => {
+  const t = document.getElementById('pixCod');
+  try { await navigator.clipboard.writeText(t.value); } catch (err) { t.select(); document.execCommand('copy'); }
+  e.target.textContent = 'Código copiado ✓'; setTimeout(() => e.target.textContent = 'Copiar código Pix', 1800);
+});
+document.getElementById('stNovo').addEventListener('click', () => { if (parar) parar(); parar = null; try { localStorage.removeItem('cdp_meu'); } catch (e) {} boxS.hidden = true; boxP.hidden = false; document.getElementById('cardapio').scrollIntoView(); });
+try { const meu = localStorage.getItem('cdp_meu'); if (meu) acompanhar(meu); } catch (e) {}
+if (DEMO) { // barra só para testar sem o Firebase ligado
+  const d = document.createElement('div'); d.className = 'demobar';
+  d.innerHTML = 'Modo demonstração · abrir <a href="garcom.html" target="_blank">painel do garçom</a> · <a href="cozinha.html" target="_blank">painel da churrasqueira</a>' + (MESA ? '' : ' · <a href="?mesa=3#pedido">simular mesa 3</a>');
+  document.body.appendChild(d);
+}
 let pedidoVisivel = false;
 new IntersectionObserver(es => { pedidoVisivel = es[0].isIntersecting; cb.classList.toggle('on', cart.size > 0 && !pedidoVisivel); }, {threshold:.15}).observe(document.getElementById('pedido'));
 paint();

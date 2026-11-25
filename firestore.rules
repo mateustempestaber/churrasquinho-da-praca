@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // quem é da equipe (garçom e churrasqueiro): crie um documento em equipe/{UID} para cada um
+    function daEquipe() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/equipe/$(request.auth.uid));
+    }
+
+    match /equipe/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /pedidos/{id} {
+      // o cliente acompanha o próprio pedido pelo código secreto (id) dele
+      allow get: if true;
+      // só a equipe vê a lista e muda o status
+      allow list, update: if daEquipe();
+      allow delete: if false;
+      // o cliente só cria pedido novo, aguardando pagamento
+      allow create: if request.resource.data.keys().hasOnly(['mesa','codigo','forma','total','nome','obs','itens','status','criado'])
+        && request.resource.data.status == 'aguardando_pagamento'
+        && request.resource.data.mesa is int
+        && request.resource.data.mesa >= 1 && request.resource.data.mesa <= 200
+        && request.resource.data.forma in ['credito', 'debito', 'pix']
+        && request.resource.data.itens is list
+        && request.resource.data.itens.size() > 0 && request.resource.data.itens.size() <= 60
+        && request.resource.data.total is number
+        && request.resource.data.nome is string && request.resource.data.nome.size() <= 40
+        && request.resource.data.obs is string && request.resource.data.obs.size() <= 120
+        && request.resource.data.criado == request.time;
+    }
+  }
+}
