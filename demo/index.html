@@ -651,13 +651,20 @@ pEnv.addEventListener('click', e => {
   const id = rascunhoId, total = totalPedido(), f = forma();
   const pedido = {mesa:MESA, codigo:codigoDe(id), forma:f, total, nome:pNome.value.trim().slice(0, 40), obs:pObs.value.trim().slice(0, 120),
     itens:[...cart].map(([k, qn]) => ({k:ALL[k].g + '|' + ALL[k].nm, nm:nomeItem(ALL[k]), g:ALL[k].g, qn, v:ALL[k].v}))};
-  DB.criar(id, pedido).then(() => {
-    try { localStorage.setItem('cdp_meu', id); } catch (err) {}
-    delete pEnv.dataset.enviando; pMsg.textContent = '';
-    acompanhar(id); cart.clear(); pNome.value = pObs.value = ''; rascunhoId = DB.novoId(); paint();
-    document.getElementById('boxStatus').scrollIntoView({block:'center'});
-  }).catch(() => { delete pEnv.dataset.enviando; pMsg.textContent = 'Não deu para enviar o pedido. Verifique a internet e tente de novo.'; });
-  pMsg.textContent = 'Enviando o pedido...';
+  // o carrinho é esvaziado na hora: o pedido feito não volta mais para o carrinho
+  const copia = [...cart], nome = pNome.value, obs = pObs.value;
+  const envio = DB.criar(id, pedido);
+  try { localStorage.setItem('cdp_meu', id); } catch (err) {}
+  cart.clear(); pNome.value = pObs.value = ''; rascunhoId = DB.novoId(); pMsg.textContent = ''; paint();
+  acompanhar(id); document.getElementById('boxStatus').scrollIntoView({block:'center'});
+  envio.then(() => { delete pEnv.dataset.enviando; }).catch(() => {
+    // não foi: devolve os itens para o carrinho
+    delete pEnv.dataset.enviando; if (parar) parar(); parar = null;
+    try { localStorage.removeItem('cdp_meu'); } catch (err) {}
+    copia.forEach(([k, q]) => cart.set(k, q)); pNome.value = nome; pObs.value = obs; rascunhoId = id;
+    boxS.hidden = true; boxP.hidden = false; paint();
+    pMsg.textContent = 'Não deu para enviar o pedido. Verifique a internet e tente de novo.';
+  });
 });
 document.getElementById('ped').addEventListener('submit', e => e.preventDefault());
 
@@ -713,6 +720,7 @@ document.getElementById('pixCopiar').addEventListener('click', async e => {
 });
 document.getElementById('stNovo').addEventListener('click', () => { if (parar) parar(); parar = null; try { localStorage.removeItem('cdp_meu'); } catch (e) {} boxS.hidden = true; boxP.hidden = false; document.getElementById('cardapio').scrollIntoView(); });
 try { const meu = localStorage.getItem('cdp_meu'); if (meu) acompanhar(meu); } catch (e) {}
+addEventListener('storage', e => { if (e.key === 'cdp_meu' && e.newValue) { cart.clear(); paint(); acompanhar(e.newValue); } });
 if (DEMO && !new URLSearchParams(location.search).has('embed')) { // barra só para testar sem o Firebase ligado
   const d = document.createElement('div'); d.className = 'demobar';
   d.innerHTML = 'Modo demonstração · abrir <a href="garcom.html" target="_blank">painel do garçom</a> · <a href="cozinha.html" target="_blank">painel da churrasqueira</a>' + (MESA ? '' : ' · <a href="?mesa=3#pedido">simular mesa 3</a>');
