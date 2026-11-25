@@ -377,7 +377,7 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
           <b>Pix de <span id="pixVal"></span></b>
           <span>Abra o app do seu banco, escolha Pix e leia o QR code. Ou copie o código:</span>
           <textarea id="pixCod" readonly rows="3" aria-label="Pix copia e cola"></textarea>
-          <div class="row"><button class="btn gold" type="button" id="pixCopiar">Copiar código Pix</button></div>
+          <div class="row"><button class="btn gold" type="button" id="pixCopiar">Copiar código Pix</button><button class="btn ghost" type="button" id="pixSimula" hidden>Simular Pix pago</button></div>
         </div>
       </div>
       <ul class="lines" id="stLines"></ul>
@@ -698,6 +698,8 @@ function acompanhar(id) {
     document.getElementById('stTot').textContent = brl(p.total || 0);
   });
 }
+const pixSim = document.getElementById('pixSimula');
+if (DEMO) { pixSim.hidden = false; pixSim.addEventListener('click', () => { const id = document.getElementById('pixBox').dataset.id; if (id) DB.mudar(id, 'pago', {pix_auto:true}); }); }
 document.getElementById('pixCopiar').addEventListener('click', async e => {
   const t = document.getElementById('pixCod');
   try { await navigator.clipboard.writeText(t.value); } catch (err) { t.select(); document.execCommand('copy'); }
@@ -705,7 +707,7 @@ document.getElementById('pixCopiar').addEventListener('click', async e => {
 });
 document.getElementById('stNovo').addEventListener('click', () => { if (parar) parar(); parar = null; try { localStorage.removeItem('cdp_meu'); } catch (e) {} boxS.hidden = true; boxP.hidden = false; document.getElementById('cardapio').scrollIntoView(); });
 try { const meu = localStorage.getItem('cdp_meu'); if (meu) acompanhar(meu); } catch (e) {}
-if (DEMO) { // barra só para testar sem o Firebase ligado
+if (DEMO && !new URLSearchParams(location.search).has('embed')) { // barra só para testar sem o Firebase ligado
   const d = document.createElement('div'); d.className = 'demobar';
   d.innerHTML = 'Modo demonstração · abrir <a href="garcom.html" target="_blank">painel do garçom</a> · <a href="cozinha.html" target="_blank">painel da churrasqueira</a>' + (MESA ? '' : ' · <a href="?mesa=3#pedido">simular mesa 3</a>');
   document.body.appendChild(d);
@@ -727,7 +729,8 @@ document.getElementById('embers').innerHTML = Array.from({length:26}, () => { co
 
 /* ---------- espetinho 3D ---------- */
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const endIntro = () => document.body.classList.remove('intro');
+let introFim = false;
+const endIntro = () => { document.body.classList.remove('intro'); if (introFim) return; introFim = true; const h = location.hash && document.querySelector(location.hash); if (h) setTimeout(() => h.scrollIntoView(), 50); };
 try {
   if (!window.THREE) throw new Error('sem three');
   const T = THREE, cv = document.getElementById('gl');

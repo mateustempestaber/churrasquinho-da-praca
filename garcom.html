@@ -193,7 +193,7 @@ function comecar() {
   const todos = [...new Set(COLS.flatMap(c => c[1]))];
   parar = DB.ouvir(todos, desenha, () => { document.getElementById('sub').textContent = 'Sem permissão para ver os pedidos. Entre com a conta da equipe.'; });
 }
-if (DEMO) { document.getElementById('demo').hidden = false; comecar(); }
+if (DEMO) { document.getElementById('demo').hidden = new URLSearchParams(location.search).has('embed'); comecar(); }
 else {
   const login = document.getElementById('login'), erro = document.getElementById('erro'), sair = document.getElementById('sair');
   DB.auth.onAuthStateChanged(u => {
