@@ -337,7 +337,7 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
       <ol class="how">
         <li><div><strong>Leia o QR code da sua mesa</strong><span>O número da mesa já vem certinho no pedido.</span></div></li>
         <li><div><strong>Escolha no cardápio</strong><span>Toque no espeto ou na bebida e escolha a quantidade. O site soma tudo.</span></div></li>
-        <li><div><strong>Pague</strong><span>Pix aqui pelo site, ou cartão: o garçom leva a maquininha até a mesa.</span></div></li>
+        <li><div><strong>Pague</strong><span>Pix aqui pelo site, ou cartão: o garçom é avisado na hora e leva a maquininha até a mesa.</span></div></li>
         <li><div><strong>Acompanhe aqui</strong><span>Você vê quando vai para a brasa e quando fica pronto. O garçom leva até a mesa.</span></div></li>
       </ol>
     </div>
@@ -361,7 +361,7 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
         </fieldset>
         <p class="msg" id="pMsg" role="status"></p>
         <div class="row">
-          <a class="btn gold" id="pEnviar" target="_blank" rel="noopener" aria-disabled="true" style="flex:1">Fazer pedido e chamar o garçom</a>
+          <a class="btn gold" id="pEnviar" href="#pedido" aria-disabled="true" style="flex:1">Fazer pedido</a>
           <button class="btn ghost" type="button" id="pLimpar">Limpar</button>
         </div>
       </form>
@@ -377,13 +377,12 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
           <b>Pix de <span id="pixVal"></span></b>
           <span>Abra o app do seu banco, escolha Pix e leia o QR code. Ou copie o código:</span>
           <textarea id="pixCod" readonly rows="3" aria-label="Pix copia e cola"></textarea>
-          <div class="row"><button class="btn gold" type="button" id="pixCopiar">Copiar código Pix</button><a class="btn ghost" id="pixPaguei" target="_blank" rel="noopener">Já paguei</a></div>
+          <div class="row"><button class="btn gold" type="button" id="pixCopiar">Copiar código Pix</button></div>
         </div>
       </div>
       <ul class="lines" id="stLines"></ul>
       <div class="total"><span id="stForma"></span><b id="stTot"></b></div>
       <div class="row">
-        <a class="btn ghost" id="stZap" target="_blank" rel="noopener">Chamar o garçom de novo</a>
         <button class="btn gold" type="button" id="stNovo">Fazer outro pedido</button>
       </div>
     </div>
@@ -431,8 +430,6 @@ footer .slogan{font:600 20px var(--serif);text-transform:uppercase;color:var(--i
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 {
-/* WhatsApp do garçom: recebe "Mesa 3 - débito - aguardando". Só números, com 55 e DDD */
-const WA_GARCOM = '5516997516854';
 const MAX_MESA = 200;
 /* ---------- Pix (copia e cola + QR) ---------- */
 const PIX = {chave:'+5516997516854', nome:'CHURRASQUINHO DA PRACA', cidade:'ARARAQUARA'};
@@ -628,7 +625,6 @@ const forma = () => (document.querySelector('input[name=pag]:checked') || {}).va
 const totalPedido = () => { let t = 0; cart.forEach((qn, k) => t += ALL[k].v * qn); return t; };
 const nomeItem = it => it.nm + (it.cat === 'bebidas' || it.cat === 'cervejas' ? ' (' + it.g + ')' : '');
 let rascunhoId = DB.novoId();
-const zapGarcom = (codigo, f, total) => 'https://wa.me/' + WA_GARCOM + '?text=' + encodeURIComponent('Mesa ' + MESA + ' - ' + formaTx[f].toLowerCase() + ' - aguardando\nPedido #' + codigo + ' - ' + brl(total));
 const faltando = () => !MESA ? 'Leia o QR code da sua mesa para fazer o pedido.' : !cart.size ? 'Escolha pelo menos um item no cardápio.' : '';
 function paint() {
   let total = 0, n = 0;
@@ -645,25 +641,24 @@ document.getElementById('pLimpar').addEventListener('click', () => { cart.clear(
 function upd() {
   const ok = !faltando();
   pEnv.setAttribute('aria-disabled', String(!ok));
-  pEnv.textContent = forma() === 'pix' ? 'Fazer pedido e pagar com Pix' : 'Fazer pedido e chamar o garçom';
-  if (!ok) { pEnv.removeAttribute('href'); return; }
-  if (forma() === 'pix') { pEnv.href = '#pedido'; pEnv.removeAttribute('target'); }
-  else { pEnv.href = zapGarcom(codigoDe(rascunhoId), forma(), totalPedido()); pEnv.target = '_blank'; }
+  pEnv.textContent = forma() === 'pix' ? 'Fazer pedido e pagar com Pix' : 'Fazer pedido';
 }
 [pNome, pObs].forEach(el => el.addEventListener('input', () => { pMsg.textContent = ''; }));
 document.querySelectorAll('input[name=pag]').forEach(el => el.addEventListener('change', () => { pMsg.textContent = ''; upd(); }));
 pEnv.addEventListener('click', e => {
-  if (pEnv.getAttribute('aria-disabled') === 'true') { e.preventDefault(); pMsg.textContent = faltando(); return; }
-  // o link do WhatsApp abre na hora (clique do usuário); o pedido é gravado em paralelo
+  e.preventDefault();
+  if (pEnv.getAttribute('aria-disabled') === 'true') { pMsg.textContent = faltando(); return; }
+  if (pEnv.dataset.enviando) return; pEnv.dataset.enviando = '1';
   const id = rascunhoId, total = totalPedido(), f = forma();
   const pedido = {mesa:MESA, codigo:codigoDe(id), forma:f, total, nome:pNome.value.trim().slice(0, 40), obs:pObs.value.trim().slice(0, 120),
     itens:[...cart].map(([k, qn]) => ({k:ALL[k].g + '|' + ALL[k].nm, nm:nomeItem(ALL[k]), g:ALL[k].g, qn, v:ALL[k].v}))};
-  DB.criar(id, pedido).then(() => setTimeout(() => { // espera o link do WhatsApp abrir antes de limpar a tela
+  DB.criar(id, pedido).then(() => {
     try { localStorage.setItem('cdp_meu', id); } catch (err) {}
+    delete pEnv.dataset.enviando; pMsg.textContent = '';
     acompanhar(id); cart.clear(); pNome.value = pObs.value = ''; rascunhoId = DB.novoId(); paint();
-  }, 300)).catch(() => { pMsg.textContent = 'Não deu para enviar o pedido. Verifique a internet e tente de novo.'; });
-  pMsg.textContent = f === 'pix' ? 'Enviando o pedido...' : 'Enviando o pedido e chamando o garçom...';
-  if (f === 'pix') e.preventDefault();
+    document.getElementById('boxStatus').scrollIntoView({block:'center'});
+  }).catch(() => { delete pEnv.dataset.enviando; pMsg.textContent = 'Não deu para enviar o pedido. Verifique a internet e tente de novo.'; });
+  pMsg.textContent = 'Enviando o pedido...';
 });
 document.getElementById('ped').addEventListener('submit', e => e.preventDefault());
 
@@ -671,7 +666,7 @@ document.getElementById('ped').addEventListener('submit', e => e.preventDefault(
 const boxP = document.getElementById('boxPedido'), boxS = document.getElementById('boxStatus');
 const ETAPA = {aguardando_pagamento:0, pago:1, preparando:1, pronto:2, entregue:3};
 const TEXTO = {
-  aguardando_pagamento:['Aguardando pagamento', 'O garçom está indo até a sua mesa com a maquininha. Assim que você pagar, o pedido vai para a churrasqueira.'],
+  aguardando_pagamento:['Aguardando pagamento', 'O garçom já foi avisado e vai até a sua mesa com a maquininha. Assim que você pagar, o pedido vai para a churrasqueira.'],
   aguardando_pix:['Pague com Pix', 'Assim que o pagamento for confirmado, o pedido vai para a churrasqueira.'],
   pago:['Pagamento confirmado', 'Seu pedido já foi para a churrasqueira.'],
   preparando:['Na brasa!', 'O churrasqueiro está preparando o seu pedido.'],
@@ -694,7 +689,6 @@ function acompanhar(id) {
       document.getElementById('pixCod').value = cod; document.getElementById('pixVal').textContent = brl(p.total);
       try { const q = qrcode(0, 'M'); q.addData(cod); q.make(); document.getElementById('pixQr').innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); }
       catch (err) { document.getElementById('pixQr').hidden = true; }
-      document.getElementById('pixPaguei').href = 'https://wa.me/' + WA_GARCOM + '?text=' + encodeURIComponent('Mesa ' + p.mesa + ' - pix - já paguei, conferir\nPedido #' + p.codigo + ' - ' + brl(p.total));
     }
     document.getElementById('stTit').textContent = tt; document.getElementById('stTx').textContent = tx;
     const e = ETAPA[p.status] ?? -1;
@@ -702,7 +696,6 @@ function acompanhar(id) {
     document.getElementById('stLines').innerHTML = (p.itens || []).map(i => '<li><span class="n">' + i.qn + 'x ' + esc(i.nm) + '</span><span class="s">' + brl(i.v * i.qn) + '</span></li>').join('');
     document.getElementById('stForma').textContent = 'Total · ' + (formaTx[p.forma] || '');
     document.getElementById('stTot').textContent = brl(p.total || 0);
-    const z = document.getElementById('stZap'); z.hidden = p.status !== 'aguardando_pagamento' || p.forma === 'pix'; z.href = 'https://wa.me/' + WA_GARCOM + '?text=' + encodeURIComponent('Mesa ' + p.mesa + ' - ' + (formaTx[p.forma] || '').toLowerCase() + ' - aguardando\nPedido #' + p.codigo + ' - ' + brl(p.total || 0));
   });
 }
 document.getElementById('pixCopiar').addEventListener('click', async e => {
